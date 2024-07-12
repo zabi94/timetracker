@@ -18,6 +18,7 @@ import javax.swing.border.BevelBorder;
 
 import dev.zabi94.timetracker.entity.Activity;
 import dev.zabi94.timetracker.gui.ErrorHandler;
+import dev.zabi94.timetracker.gui.GenericHandlers;
 import dev.zabi94.timetracker.gui.components.ActivityListPanel.ActivityListElement;
 import dev.zabi94.timetracker.utils.Utils;
 
@@ -64,6 +65,7 @@ public class ActivityWindow extends JFrame {
 		c.weighty = 1;
 		description.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 		description.setText(this.activity.getDescription());
+		description.addKeyListener(GenericHandlers.AVOID_TABS);
 		this.add(description, c);
 		
 

@@ -12,6 +12,7 @@ import javax.swing.JTextField;
 
 import dev.zabi94.timetracker.db.SimpleDate;
 import dev.zabi94.timetracker.gui.ErrorHandler;
+import dev.zabi94.timetracker.gui.GenericHandlers;
 import dev.zabi94.timetracker.utils.Utils;
 
 public class DatePicker extends JDialog {
@@ -49,6 +50,7 @@ public class DatePicker extends JDialog {
 		c.weightx = 1;
 		day.setText(sd.day()+"");
 		this.add(day, c);
+		day.addFocusListener(GenericHandlers.SELECT_ON_FOCUS);
 		
 		c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -59,6 +61,7 @@ public class DatePicker extends JDialog {
 		c.weightx = 1;
 		month.setText(sd.month()+"");
 		this.add(month, c);
+		month.addFocusListener(GenericHandlers.SELECT_ON_FOCUS);
 		
 		c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -69,6 +72,8 @@ public class DatePicker extends JDialog {
 		c.weightx = 2;
 		year.setText(sd.year()+"");
 		this.add(year, c);
+		year.addFocusListener(GenericHandlers.SELECT_ON_FOCUS);
+		
 		
 		c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -78,7 +83,6 @@ public class DatePicker extends JDialog {
 		c.insets = new Insets(0, 10, 10, 10);
 		this.add(confirm, c);
 		
-
 		confirm.addActionListener(evt -> {
 			try {
 				int dayVal = Integer.parseInt(day.getText());
@@ -97,5 +101,6 @@ public class DatePicker extends JDialog {
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		this.setVisible(true);
+		
 	}
 }

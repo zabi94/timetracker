@@ -18,6 +18,7 @@ import javax.swing.border.BevelBorder;
 import dev.zabi94.timetracker.RegistrationStatus;
 import dev.zabi94.timetracker.entity.ActivityThread;
 import dev.zabi94.timetracker.gui.ErrorHandler;
+import dev.zabi94.timetracker.gui.GenericHandlers;
 import dev.zabi94.timetracker.gui.components.ActivityListPanel;
 import dev.zabi94.timetracker.utils.Utils;
 
@@ -94,6 +95,7 @@ public class ActivityThreadWindow extends JFrame {
 		c.weighty = 1;
 		c.fill = GridBagConstraints.BOTH;
 		this.add(description, c);
+		description.addKeyListener(GenericHandlers.AVOID_TABS);
 
 		c = new GridBagConstraints();
 		c.insets = new Insets(5, 5, 5, 5);
