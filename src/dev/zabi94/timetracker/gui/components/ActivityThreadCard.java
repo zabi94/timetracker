@@ -11,12 +11,14 @@ import java.awt.event.MouseListener;
 import java.sql.SQLException;
 
 import javax.swing.JLabel;
+import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import dev.zabi94.timetracker.RegistrationStatus;
 import dev.zabi94.timetracker.entity.Activity;
 import dev.zabi94.timetracker.entity.ActivityThread;
 import dev.zabi94.timetracker.gui.AppStyle;
@@ -102,6 +104,36 @@ public class ActivityThreadCard extends JPanel implements MouseListener {
 		JMenuItem addActivity = new JMenuItem("Aggiungi intervento");
 		contextual_menu.add(addActivity);
 		addActivity.addActionListener(evt -> this.openNewActivityWindow());
+		
+		contextual_menu.addSeparator();
+		
+		JMenu change_state_submenu = new JMenu("Cambia stato");
+		
+		contextual_menu.add(change_state_submenu);
+		
+		for (RegistrationStatus rs:RegistrationStatus.values()) {
+			
+			JMenuItem mi = new JMenuItem(rs.toString());
+			
+			if (thread.getStatus() == rs) {
+				mi.setEnabled(false);
+			}
+			
+			mi.addActionListener(evt -> {
+				thread.setStatus(rs);
+				try {
+					thread.db_persist();
+				} catch (SQLException e) {
+					ErrorHandler.showErrorWindow("Impossibile cambiare stato: "+e.getMessage());
+				}
+				MainWindow.getInstance().setDate(MainWindow.getInstance().getSelectedDate());
+			});
+			
+			change_state_submenu.add(mi);
+			
+		}
+		
+		contextual_menu.addSeparator();
 		
 		JMenuItem deleteThread = new JMenuItem("Elimina attività");
 		contextual_menu.add(deleteThread);
