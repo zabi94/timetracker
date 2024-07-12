@@ -1,0 +1,260 @@
+package dev.zabi94.timetracker.gui.windows;
+
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
+import dev.zabi94.timetracker.db.SimpleDate;
+import dev.zabi94.timetracker.entity.ActivityThread;
+import dev.zabi94.timetracker.gui.ErrorHandler;
+import dev.zabi94.timetracker.gui.components.ActionBar;
+import dev.zabi94.timetracker.gui.components.ActivityThreadCard;
+import dev.zabi94.timetracker.utils.Utils;
+
+public class MainWindow extends JFrame {
+
+	private static final long serialVersionUID = -7804053722158533599L;
+	private static final Font TITLE_FONT = new Font(Font.SANS_SERIF, Font.BOLD, 16);
+	private static final int DW = 800;
+	private static final int DH = 600;
+	
+	private static MainWindow INSTANCE;
+
+	private JLabel date_label = new JLabel("", SwingConstants.CENTER);
+	private JLabel date_total_time = new JLabel("");
+	private JPanel activity_panel = new JPanel();
+	private JButton date_before = new JButton("<");
+	private JButton date_after = new JButton(">");
+	private JButton date_today = new JButton("Oggi");
+	private List<ActivityThreadCard> cards = new ArrayList<>();
+	private ActionBar actionBar;
+	private SimpleDate date;
+	
+	public MainWindow(SimpleDate date) throws SQLException {
+		
+		this.setTitle("Time Tracker");
+		
+		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		this.date = date;
+		this.actionBar = new ActionBar();
+
+		int sw = getToolkit().getScreenSize().width;
+		int sh = getToolkit().getScreenSize().height;
+		
+		this.setBounds((sw - DW)/2, (sh - DH)/2, DW, DH);
+		this.setLayout(new GridBagLayout());
+		date_label.setText(date.toString());
+		date_label.setBackground(Color.gray);
+		date_label.setFont(TITLE_FONT);
+		
+		GridBagConstraints c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.CENTER;
+		c.gridx = 1;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 1;
+		this.add(date_label, c);
+
+		
+		c = new GridBagConstraints();
+		c.gridy = 0;
+		c.gridx = 0;
+		c.insets = new Insets(3, 3, 3, 3);
+		c.anchor = GridBagConstraints.NORTHWEST;
+		this.add(date_before, c);
+		date_before.addActionListener(evt -> {
+			try {
+				this.date = this.date.dayBefore();
+				this.loadContents(this.date);
+			} catch (SQLException e) {
+				ErrorHandler.showErrorWindow("Impossibile cambiare data: "+e.getMessage());
+			}
+		});
+
+		
+		c = new GridBagConstraints();
+		c.gridy = 0;
+		c.gridx = 2;
+		c.insets = new Insets(3, 3, 3, 3);
+		c.anchor = GridBagConstraints.NORTHEAST;
+		this.add(date_after, c);
+		date_after.addActionListener(evt -> {
+			try {
+				this.date = this.date.dayAfter();
+				this.loadContents(this.date);
+			} catch (SQLException e) {
+				ErrorHandler.showErrorWindow("Impossibile cambiare data: "+e.getMessage());
+			}
+		});
+
+		
+		c = new GridBagConstraints();
+		c.gridy = 1;
+		c.gridx = 1;
+		c.insets = new Insets(3, 3, 3, 3);
+		c.anchor = GridBagConstraints.CENTER;
+		this.add(date_today, c);
+		date_today.addActionListener(evt -> {
+			try {
+				this.date = SimpleDate.today();
+				this.loadContents(this.date);
+			} catch (SQLException e) {
+				ErrorHandler.showErrorWindow("Impossibile cambiare data: "+e.getMessage());
+			}
+		});
+
+		
+		c = new GridBagConstraints();
+		c.gridy = 1;
+		c.gridx = 2;
+		c.insets = new Insets(3, 3, 3, 3);
+		c.anchor = GridBagConstraints.PAGE_END;
+		this.add(date_total_time, c);
+
+		
+		c = new GridBagConstraints();
+		c.gridy = 2;
+		c.weighty = 1;
+		c.gridheight = 2;
+		c.gridwidth = 3;
+		c.fill = GridBagConstraints.BOTH;
+		activity_panel.setLayout(new BoxLayout(activity_panel, BoxLayout.Y_AXIS));
+		activity_panel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5), BorderFactory.createEtchedBorder()));
+		this.add(activity_panel, c);
+		
+		c = new GridBagConstraints();
+		c.gridy = 4;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridwidth = 3;
+		this.add(actionBar, c);
+		
+		activity_panel.add(Box.createVerticalGlue());
+		
+		date_label.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {
+				
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				new DatePicker(INSTANCE.getSelectedDate());
+			}
+		});
+		
+		loadContents(date);
+		
+		this.setVisible(true);
+		
+	}
+
+	
+	public void selectRow(ActivityThreadCard atc) {
+		cards.forEach(c -> c.setSelected(false));
+		if (atc != null) atc.setSelected(true);
+		actionBar.onActivityThreadSelected(atc);
+	}
+	
+	public Optional<ActivityThreadCard> getSelectedRow() {
+		return cards.stream().filter(c -> c.isSelected()).findAny();
+	}
+	
+	public SimpleDate getSelectedDate() {
+		return date;
+	}
+	
+	private void loadContents(SimpleDate date) throws SQLException {
+		
+		date_label.setText(date.toString());
+		
+		
+		for (Component c: activity_panel.getComponents()) {
+			activity_panel.remove(c);
+		}
+
+		selectRow(null);
+		cards.clear();
+
+		int[] counter = {0};
+		int[] quarters = {0};
+		
+		ActivityThread.findByDate(date).forEach(at -> {
+			ActivityThreadCard atc = new ActivityThreadCard(at, (counter[0]++%2)==0);
+			cards.add(atc);
+			activity_panel.add(atc);
+			atc.init();
+			try {
+				quarters[0] += at.getQuarters();
+			} catch (SQLException e) {
+				quarters[0] = Integer.MIN_VALUE;
+			}
+		});
+		
+		this.date_total_time.setText(Utils.quartersToTime(quarters[0]));
+		
+		selectRow(null);
+		
+		Dimension a = this.getSize();
+		this.setSize(a.width+1, a.height);
+		this.setSize(a);
+		
+	}
+	
+	public static MainWindow getInstance() {
+		if (INSTANCE == null) {
+			try {
+				INSTANCE = new MainWindow(SimpleDate.today());
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		}
+		
+		return INSTANCE;
+	}
+
+
+	public void setDate(SimpleDate date) {
+		this.date = date;
+		try {
+			loadContents(date);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			ErrorHandler.showErrorWindow("Impossibile cambiare data: "+e.getMessage());
+		}
+	}
+	
+}
