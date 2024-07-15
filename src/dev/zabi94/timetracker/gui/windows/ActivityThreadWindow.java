@@ -69,6 +69,7 @@ public class ActivityThreadWindow extends JFrame {
 		c.insets = new Insets(5, 5, 5, 5);
 		c.gridy = 0;
 		c.gridx = 1;
+		c.gridwidth = 2;
 		c.anchor = GridBagConstraints.LINE_START;
 		c.weightx = 1;
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -89,7 +90,7 @@ public class ActivityThreadWindow extends JFrame {
 		c.insets = new Insets(0, 5, 5, 5);
 		c.gridy = 2;
 		c.gridheight = 3;
-		c.gridwidth = 2;
+		c.gridwidth = 3;
 		c.gridx = 0;
 		c.anchor = GridBagConstraints.LINE_START;
 		c.weightx = 1;
@@ -101,7 +102,7 @@ public class ActivityThreadWindow extends JFrame {
 		c = new GridBagConstraints();
 		c.insets = new Insets(5, 5, 5, 5);
 		c.gridy = 7;
-		c.gridx = 1;
+		c.gridx = 2;
 		c.gridheight = 1;
 		c.anchor = GridBagConstraints.LINE_END;
 		this.add(save,c);
@@ -111,7 +112,8 @@ public class ActivityThreadWindow extends JFrame {
 		c.insets = new Insets(5, 5, 5, 5);
 		c.gridy = 7;
 		c.gridx = 0;
-		c.gridheight = 1;
+		c.gridwidth = 2;
+		c.fill = GridBagConstraints.HORIZONTAL;
 		c.anchor = GridBagConstraints.LINE_START;
 		status.setSelectedItem(this.activity.getStatus());
 		this.add(status,c);
@@ -122,7 +124,7 @@ public class ActivityThreadWindow extends JFrame {
 		c.gridx = 0;
 		c.anchor = GridBagConstraints.LINE_END;
 		c.fill = GridBagConstraints.BOTH;
-		c.gridwidth = 2;
+		c.gridwidth = 3;
 		c.weightx = 1;
 		this.add(activities,c);
 
@@ -130,9 +132,7 @@ public class ActivityThreadWindow extends JFrame {
 		c.insets = new Insets(5, 5, 0, 5);
 		c.gridy = 5;
 		c.gridx = 0;
-		c.weightx = 1;
 		c.anchor = GridBagConstraints.LINE_START;
-		c.fill = GridBagConstraints.HORIZONTAL;
 		this.add(activities_label,c);
 		
 		
