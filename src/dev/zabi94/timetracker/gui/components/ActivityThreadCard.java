@@ -6,15 +6,20 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.sql.SQLException;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
@@ -73,6 +78,19 @@ public class ActivityThreadCard extends JPanel implements MouseListener {
 		description_label.setFont(ROW_FONT);
 		timecount_label.setFont(ROW_FONT);
 		
+		Action copyToClipboard = new AbstractAction("Copia") {
+			
+			private static final long serialVersionUID = -5394988313390293590L;
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Utils.copyText(thread.getDescription().trim());
+			}
+		};
+		
+		this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("control C"), "copyToClipboard");
+		this.getActionMap().put("copyToClipboard", copyToClipboard);
+		
 		GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.CENTER;
 		c.ipadx = 20;
@@ -105,6 +123,9 @@ public class ActivityThreadCard extends JPanel implements MouseListener {
 		JMenuItem addActivity = new JMenuItem("Aggiungi intervento");
 		contextual_menu.add(addActivity);
 		addActivity.addActionListener(evt -> this.openNewActivityWindow());
+		
+		JMenuItem copyDescription = new JMenuItem(copyToClipboard);
+		contextual_menu.add(copyDescription);
 		
 		contextual_menu.addSeparator();
 		

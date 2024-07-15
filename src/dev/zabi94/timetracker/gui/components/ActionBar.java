@@ -1,7 +1,5 @@
 package dev.zabi94.timetracker.gui.components;
 
-import java.awt.Toolkit;
-import java.awt.datatransfer.StringSelection;
 import java.sql.SQLException;
 import java.util.HashMap;
 
@@ -18,6 +16,7 @@ import dev.zabi94.timetracker.entity.ActivityThread;
 import dev.zabi94.timetracker.gui.ErrorHandler;
 import dev.zabi94.timetracker.gui.windows.ActivityThreadWindow;
 import dev.zabi94.timetracker.gui.windows.MainWindow;
+import dev.zabi94.timetracker.utils.Utils;
 
 public class ActionBar extends JPanel {
 
@@ -69,9 +68,7 @@ public class ActionBar extends JPanel {
 						sb.append("\n");
 					}
 					
-					StringSelection cp = new StringSelection(sb.toString().trim());
-					
-					Toolkit.getDefaultToolkit().getSystemClipboard().setContents(cp, cp);
+					Utils.copyText(sb.toString().trim());
 					JOptionPane.showMessageDialog(MainWindow.getInstance(), "Richiesta copiata");
 					
 				});
