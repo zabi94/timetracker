@@ -11,7 +11,7 @@ import dev.zabi94.timetracker.gui.windows.MainWindow;
 public class TimeTracker {
 
 	public static void main(String[] args) throws SQLException {
-
+		
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			if ("GTK+".equals(System.getProperty("tt_graphics"))) {

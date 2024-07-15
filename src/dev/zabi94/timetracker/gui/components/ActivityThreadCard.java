@@ -61,7 +61,8 @@ public class ActivityThreadCard extends JPanel implements MouseListener {
 		}
 		
 		customer_label.setText(thread.getCustomer());
-		customer_label.setPreferredSize(new Dimension(100, customer_label.getPreferredSize().height));
+		customer_label.setMinimumSize(new Dimension(80, customer_label.getPreferredSize().height));
+		customer_label.setMaximumSize(new Dimension(150, Integer.MAX_VALUE));
 		try {
 			timecount_label.setText(Utils.quartersToTime(at.getQuarters()));
 		} catch (SQLException e) {
