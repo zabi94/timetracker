@@ -47,6 +47,9 @@ public class ActivityWindow extends JFrame {
 		this.setAlwaysOnTop(true);
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		
+		this.description.setLineWrap(true);
+		this.description.setWrapStyleWord(true);
+		
 		this.setLayout(new GridBagLayout());
 		
 		GridBagConstraints c = new GridBagConstraints();
