@@ -19,6 +19,7 @@ import javax.swing.border.BevelBorder;
 import dev.zabi94.timetracker.entity.Activity;
 import dev.zabi94.timetracker.gui.ErrorHandler;
 import dev.zabi94.timetracker.gui.GenericHandlers;
+import dev.zabi94.timetracker.gui.Icons;
 import dev.zabi94.timetracker.gui.components.ActivityListPanel.ActivityListElement;
 import dev.zabi94.timetracker.utils.Utils;
 
@@ -35,7 +36,7 @@ public class ActivityWindow extends JFrame {
 	private final JLabel spinner_total = new JLabel("0:15h", SwingConstants.LEFT);
 	private final JTextArea description = new JTextArea();
 	private final JSpinner spinner = new JSpinner();
-	private final JButton save = new JButton("Salva su DB");
+	private final JButton save = new JButton(Icons.SAVE);
 	
 	public ActivityWindow(Activity activity, ActivityListElement activityListElementIn) {
 		this.activity = activity;
@@ -79,6 +80,7 @@ public class ActivityWindow extends JFrame {
 		c.anchor = GridBagConstraints.LINE_START;
 		c.fill = GridBagConstraints.VERTICAL;
 		c.gridx = 2;
+		save.setToolTipText("Salva su DB");
 		this.add(save,c);
 		
 

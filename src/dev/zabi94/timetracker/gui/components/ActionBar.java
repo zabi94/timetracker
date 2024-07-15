@@ -14,6 +14,7 @@ import dev.zabi94.timetracker.RegistrationStatus;
 import dev.zabi94.timetracker.db.Data;
 import dev.zabi94.timetracker.entity.ActivityThread;
 import dev.zabi94.timetracker.gui.ErrorHandler;
+import dev.zabi94.timetracker.gui.Icons;
 import dev.zabi94.timetracker.gui.windows.ActivityThreadWindow;
 import dev.zabi94.timetracker.gui.windows.MainWindow;
 import dev.zabi94.timetracker.utils.Utils;
@@ -22,15 +23,16 @@ public class ActionBar extends JPanel {
 
 	private static final long serialVersionUID = -945355766144418106L;
 
-	private JButton addThreadButton = new JButton("Nuova attività");
-	private JButton exportMissing = new JButton("Esporta richieste");
+	private JButton addThreadButton = new JButton(Icons.NEW_ACTIVITY);
+	private JButton exportMissing = new JButton(Icons.EXPORT);
 	
 	public ActionBar() {
 		
 		this.setBorder(new EmptyBorder(5, 5, 5, 5));
 		this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 		
-		addThreadButton.setFocusPainted(false);
+		addThreadButton.setToolTipText("Nuova attività");
+		exportMissing.setToolTipText("Esporta richieste");
 		
 		addThreadButton.addActionListener(e -> {
 			ActivityThread act = new ActivityThread();

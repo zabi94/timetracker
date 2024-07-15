@@ -19,6 +19,7 @@ import dev.zabi94.timetracker.RegistrationStatus;
 import dev.zabi94.timetracker.entity.ActivityThread;
 import dev.zabi94.timetracker.gui.ErrorHandler;
 import dev.zabi94.timetracker.gui.GenericHandlers;
+import dev.zabi94.timetracker.gui.Icons;
 import dev.zabi94.timetracker.gui.components.ActivityListPanel;
 import dev.zabi94.timetracker.utils.Utils;
 
@@ -29,7 +30,7 @@ public class ActivityThreadWindow extends JFrame {
 	private static final int DH = 500;
 	
 	private final ActivityThread activity;
-	private final JButton save = new JButton("Salva su DB");
+	private final JButton save = new JButton(Icons.SAVE);
 	private final JLabel description_label = new JLabel("Descrizione", SwingConstants.LEFT);
 	private final JLabel customer_label = new JLabel("Cliente", SwingConstants.LEFT);
 	private final JLabel activities_label = new JLabel("Interventi", SwingConstants.LEFT);
@@ -104,6 +105,7 @@ public class ActivityThreadWindow extends JFrame {
 		c.gridheight = 1;
 		c.anchor = GridBagConstraints.LINE_END;
 		this.add(save,c);
+		save.setToolTipText("Salva su DB");
 
 		c = new GridBagConstraints();
 		c.insets = new Insets(5, 5, 5, 5);

@@ -26,6 +26,7 @@ import javax.swing.SwingConstants;
 import dev.zabi94.timetracker.db.SimpleDate;
 import dev.zabi94.timetracker.entity.ActivityThread;
 import dev.zabi94.timetracker.gui.ErrorHandler;
+import dev.zabi94.timetracker.gui.Icons;
 import dev.zabi94.timetracker.gui.components.ActionBar;
 import dev.zabi94.timetracker.gui.components.ActivityThreadCard;
 import dev.zabi94.timetracker.utils.Utils;
@@ -42,8 +43,8 @@ public class MainWindow extends JFrame {
 	private JLabel date_label = new JLabel("", SwingConstants.CENTER);
 	private JLabel date_total_time = new JLabel("");
 	private JPanel activity_panel = new JPanel();
-	private JButton date_before = new JButton("<");
-	private JButton date_after = new JButton(">");
+	private JButton date_before = new JButton(Icons.ARROW_LEFT);
+	private JButton date_after = new JButton(Icons.ARROW_RIGHT);
 	private JButton date_today = new JButton("Oggi");
 	private List<ActivityThreadCard> cards = new ArrayList<>();
 	private ActionBar actionBar;
@@ -56,6 +57,9 @@ public class MainWindow extends JFrame {
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.date = date;
 		this.actionBar = new ActionBar();
+		
+		this.date_before.setToolTipText("Giorno precedente");
+		this.date_after.setToolTipText("Giorno successivo");
 
 		int sw = getToolkit().getScreenSize().width;
 		int sh = getToolkit().getScreenSize().height;
