@@ -3,12 +3,17 @@ package dev.zabi94.timetracker.gui.windows;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 
 import dev.zabi94.timetracker.db.SimpleDate;
 import dev.zabi94.timetracker.gui.ErrorHandler;
@@ -33,6 +38,30 @@ public class DatePicker extends JDialog {
 		this.setTitle("Seleziona data");
 		this.setResizable(false);
 		this.setBounds(Utils.positionInMiddleOfMainWindow(DW, DH));
+		
+		Action go = new AbstractAction("Vai") {
+			
+			private static final long serialVersionUID = -3139366553620929845L;
+
+			@Override
+			public void actionPerformed(ActionEvent evt) {
+				try {
+					int dayVal = Integer.parseInt(day.getText());
+					int monthVal = Integer.parseInt(month.getText());
+					int yearVal = Integer.parseInt(year.getText());
+					
+					setVisible(false);
+					dispose();
+					SimpleDate date = new SimpleDate(dayVal, monthVal, yearVal);
+					MainWindow.getInstance().setDate(date);
+				} catch (Exception e) {
+					ErrorHandler.showErrorWindow("Impossibile cambiare data: "+e.getMessage());
+				}
+			}
+		};
+		
+		this.rootPane.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke("ENTER"), "submit");
+		this.rootPane.getActionMap().put("submit", go);
 		
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -83,20 +112,7 @@ public class DatePicker extends JDialog {
 		c.insets = new Insets(0, 10, 10, 10);
 		this.add(confirm, c);
 		
-		confirm.addActionListener(evt -> {
-			try {
-				int dayVal = Integer.parseInt(day.getText());
-				int monthVal = Integer.parseInt(month.getText());
-				int yearVal = Integer.parseInt(year.getText());
-				
-				this.setVisible(false);
-				this.dispose();
-				SimpleDate date = new SimpleDate(dayVal, monthVal, yearVal);
-				MainWindow.getInstance().setDate(date);
-			} catch (Exception e) {
-				ErrorHandler.showErrorWindow("Impossibile cambiare data: "+e.getMessage());
-			}
-		});
+		confirm.setAction(go);
 		
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
