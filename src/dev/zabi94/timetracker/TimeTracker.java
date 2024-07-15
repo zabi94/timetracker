@@ -14,7 +14,7 @@ public class TimeTracker {
 		
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			if ("GTK+".equals(System.getProperty("tt_graphics"))) {
+			if ("GTK+".equals(System.getenv("tt_graphics"))) {
 				for (LookAndFeelInfo lfi: UIManager.getInstalledLookAndFeels()) {
 					if (lfi.getName().equals("GTK+")) {
 						UIManager.setLookAndFeel(lfi.getClassName());
