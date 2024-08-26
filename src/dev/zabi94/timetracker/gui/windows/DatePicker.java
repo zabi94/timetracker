@@ -4,6 +4,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.util.Optional;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -33,11 +34,13 @@ public class DatePicker extends JDialog {
 	private final JLabel label = new JLabel("Data:");
 	
 
-	public DatePicker(SimpleDate sd) {
+	private DatePicker(SimpleDate sd, String title, String buttonLabel, ResultConsumer action) {
 		this.setLayout(new GridBagLayout());
 		this.setTitle("Seleziona data");
 		this.setResizable(false);
 		this.setBounds(Utils.positionInMiddleOfMainWindow(DW, DH));
+
+		Utils.setOnCloseBehaviour(this, () -> action.onSelection(Optional.empty()));
 		
 		Action go = new AbstractAction("Vai") {
 			
@@ -53,7 +56,7 @@ public class DatePicker extends JDialog {
 					setVisible(false);
 					dispose();
 					SimpleDate date = new SimpleDate(dayVal, monthVal, yearVal);
-					MainWindow.getInstance().setDate(date);
+					action.onSelection(Optional.of(date));
 				} catch (Exception e) {
 					ErrorHandler.showErrorWindow("Impossibile cambiare data: "+e.getMessage());
 				}
@@ -119,4 +122,18 @@ public class DatePicker extends JDialog {
 		this.setVisible(true);
 		
 	}
+	
+	public static void prompt(SimpleDate sd, String title, String buttonLabel, ResultConsumer action) {
+		new DatePicker(sd, title, buttonLabel, action);
+	}
+	
+	
+	@FunctionalInterface
+	public static interface ResultConsumer {
+		
+		public void onSelection(Optional<SimpleDate> selection);
+		
+	}
+	
+	
 }

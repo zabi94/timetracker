@@ -24,6 +24,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import dev.zabi94.timetracker.RegistrationStatus;
+import dev.zabi94.timetracker.db.SimpleDate;
 import dev.zabi94.timetracker.entity.Activity;
 import dev.zabi94.timetracker.entity.ActivityThread;
 import dev.zabi94.timetracker.gui.AppStyle;
@@ -34,11 +35,11 @@ import dev.zabi94.timetracker.gui.windows.MainWindow;
 import dev.zabi94.timetracker.utils.Utils;
 
 public class ActivityThreadCard extends JPanel implements MouseListener {
-	
+
 	private static final long serialVersionUID = -2666663882262854246L;
 	private static final Dimension MAX_SIZE = new Dimension(Integer.MAX_VALUE, 20);
 	private static final Font ROW_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 14);
-	
+
 	private final ActivityThread thread;
 	private final boolean zebra;
 
@@ -49,22 +50,22 @@ public class ActivityThreadCard extends JPanel implements MouseListener {
 	private final JLabel description_label = new JLabel();
 	private final JLabel timecount_label = new JLabel();
 	private final JPopupMenu contextual_menu = new JPopupMenu();
-	
+
 	public ActivityThreadCard(ActivityThread at, boolean zebraType) {
 		this.thread = at;
 		this.zebra = zebraType;
-		
+
 		this.setBorder(new EmptyBorder(2, 5, 2, 5));
 		this.setLayout(new GridBagLayout());
 		this.setMaximumSize(MAX_SIZE);
 		this.setSize(this.getPreferredSize());
-		
+
 		if (zebraType) {
 			this.setBackground(AppStyle.BG_ZEBRA_1); 
 		} else {
 			this.setBackground(AppStyle.BG_ZEBRA_2); 
 		}
-		
+
 		customer_label.setText(thread.getCustomer());
 		customer_label.setMinimumSize(new Dimension(80, customer_label.getPreferredSize().height));
 		customer_label.setMaximumSize(new Dimension(150, Integer.MAX_VALUE));
@@ -77,9 +78,9 @@ public class ActivityThreadCard extends JPanel implements MouseListener {
 		customer_label.setFont(ROW_FONT);
 		description_label.setFont(ROW_FONT);
 		timecount_label.setFont(ROW_FONT);
-		
+
 		Action copyToClipboard = new AbstractAction("Copia") {
-			
+
 			private static final long serialVersionUID = -5394988313390293590L;
 
 			@Override
@@ -87,26 +88,26 @@ public class ActivityThreadCard extends JPanel implements MouseListener {
 				Utils.copyText(thread.getDescription().trim());
 			}
 		};
-		
+
 		this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("control C"), "copyToClipboard");
 		this.getActionMap().put("copyToClipboard", copyToClipboard);
-		
+
 		GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.CENTER;
 		c.ipadx = 20;
 		this.add(customer_label, c);
-		
+
 		c = new GridBagConstraints();
 		c.gridx = 1;
 		c.weightx = 1;
 		c.anchor = GridBagConstraints.LINE_START;
 		this.add(description_label, c);
-		
+
 		c = new GridBagConstraints();
 		c.gridx = 2;
 		c.anchor = GridBagConstraints.LINE_END;
 		this.add(timecount_label, c);
-		
+
 		c = new GridBagConstraints();
 		c.gridx = 3;
 		c.anchor = GridBagConstraints.LINE_END;
@@ -115,32 +116,32 @@ public class ActivityThreadCard extends JPanel implements MouseListener {
 		Component box = new JPanel();
 		box.setBackground(at.getStatus().getColor());
 		this.add(box, c);
-		
+
 		JMenuItem editThread = new JMenuItem("Modifica");
 		contextual_menu.add(editThread);
 		editThread.addActionListener(evt -> this.openWindow());
-		
+
 		JMenuItem addActivity = new JMenuItem("Aggiungi intervento");
 		contextual_menu.add(addActivity);
 		addActivity.addActionListener(evt -> this.openNewActivityWindow());
-		
+
 		JMenuItem copyDescription = new JMenuItem(copyToClipboard);
 		contextual_menu.add(copyDescription);
-		
+
 		contextual_menu.addSeparator();
-		
+
 		JMenu change_state_submenu = new JMenu("Cambia stato");
-		
+
 		contextual_menu.add(change_state_submenu);
-		
+
 		for (RegistrationStatus rs:RegistrationStatus.values()) {
-			
+
 			JMenuItem mi = new JMenuItem(rs.toString());
-			
+
 			if (thread.getStatus() == rs) {
 				mi.setEnabled(false);
 			}
-			
+
 			mi.addActionListener(evt -> {
 				thread.setStatus(rs);
 				try {
@@ -150,13 +151,13 @@ public class ActivityThreadCard extends JPanel implements MouseListener {
 				}
 				MainWindow.getInstance().setDate(MainWindow.getInstance().getSelectedDate());
 			});
-			
+
 			change_state_submenu.add(mi);
-			
+
 		}
-		
+
 		contextual_menu.addSeparator();
-		
+
 		JMenuItem deleteThread = new JMenuItem("Elimina attività");
 		contextual_menu.add(deleteThread);
 		deleteThread.addActionListener(evt -> {
@@ -171,18 +172,18 @@ public class ActivityThreadCard extends JPanel implements MouseListener {
 				ErrorHandler.showErrorWindow("Errore nell'eliminazione dell'attività: "+e.getMessage());
 			}
 		});
-		
+
 		this.setComponentPopupMenu(contextual_menu);
-		
+
 	}
-	
+
 	public void init() {
 		this.addMouseListener(this);
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		
+
 		if (System.currentTimeMillis() - lastClick < 300) {
 			openWindow();
 			lastClick = System.currentTimeMillis();
@@ -195,12 +196,12 @@ public class ActivityThreadCard extends JPanel implements MouseListener {
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		
+
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		
+
 	}
 
 	@Override
@@ -214,12 +215,12 @@ public class ActivityThreadCard extends JPanel implements MouseListener {
 		this.hovered = false;
 		updateBackground();
 	}
-	
+
 	public void setSelected(boolean selected) {
 		this.selected = selected;
 		updateBackground();
 	}
-	
+
 	private void updateBackground() {
 		if (selected) {
 			this.setBackground(AppStyle.BG_SELECTED);
@@ -231,7 +232,7 @@ public class ActivityThreadCard extends JPanel implements MouseListener {
 			this.setBackground(AppStyle.BG_ZEBRA_2);
 		}
 	}
-	
+
 	public boolean isSelected() {
 		return selected;
 	}
@@ -239,17 +240,40 @@ public class ActivityThreadCard extends JPanel implements MouseListener {
 	public void openWindow() {
 		new ActivityThreadWindow(this.thread);
 	}
-	
+
 	public void openNewActivityWindow() {
-			Activity a = new Activity();
-			a.setActivityID(this.thread.db_id());
-			a.setDescription("");
-			a.setQuarters(0);
-			new ActivityWindow(a, null);
+		Activity a = new Activity();
+		a.setActivityID(this.thread.db_id());
+		a.setDescription("");
+		a.setQuarters(0);
+		new ActivityWindow(a, null);
 	}
 
 	public void deleteRow() throws SQLException {
 		this.thread.db_delete();
+	}
+
+	public void cloneActivity(SimpleDate date) {
+		try {
+			ActivityThread at = new ActivityThread();
+			at.setDate(date);
+			at.setCustomer(thread.getCustomer());
+			at.setDescription(thread.getDescription());
+			at.setStatus(thread.getStatus());
+			at.db_persist();
+
+			int id = at.db_id();
+			for (Activity activity: thread.activities()) {
+				Activity na = new Activity();
+				na.setActivityID(id);
+				na.setDescription(activity.getDescription());
+				na.setQuarters(activity.getQuarters());
+				na.db_persist();
+			}
+		} catch (SQLException e) {
+			ErrorHandler.showErrorWindow("Impossibile clonare attività");
+			return;
+		}
 	}
 
 }

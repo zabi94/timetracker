@@ -176,7 +176,8 @@ public class MainWindow extends JFrame {
 			
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				new DatePicker(INSTANCE.getSelectedDate());
+				final SimpleDate current = INSTANCE.getSelectedDate();
+				DatePicker.prompt(current, "Seleziona data", "vai", date -> MainWindow.getInstance().setDate(date.orElse(current)));
 			}
 		});
 		

@@ -12,10 +12,12 @@ import javax.swing.border.EmptyBorder;
 
 import dev.zabi94.timetracker.RegistrationStatus;
 import dev.zabi94.timetracker.db.Data;
+import dev.zabi94.timetracker.db.SimpleDate;
 import dev.zabi94.timetracker.entity.ActivityThread;
 import dev.zabi94.timetracker.gui.ErrorHandler;
 import dev.zabi94.timetracker.gui.Icons;
 import dev.zabi94.timetracker.gui.windows.ActivityThreadWindow;
+import dev.zabi94.timetracker.gui.windows.DatePicker;
 import dev.zabi94.timetracker.gui.windows.MainWindow;
 import dev.zabi94.timetracker.utils.Utils;
 
@@ -25,6 +27,7 @@ public class ActionBar extends JPanel {
 
 	private JButton addThreadButton = new JButton(Icons.NEW_ACTIVITY);
 	private JButton exportMissing = new JButton(Icons.EXPORT);
+	private JButton multiplyToDays = new JButton(Icons.MULTI);
 	
 	public ActionBar() {
 		
@@ -33,6 +36,7 @@ public class ActionBar extends JPanel {
 		
 		addThreadButton.setToolTipText("Nuova attività");
 		exportMissing.setToolTipText("Esporta richieste");
+		multiplyToDays.setToolTipText("Inserimento multiplo");
 		
 		addThreadButton.addActionListener(e -> {
 			ActivityThread act = new ActivityThread();
@@ -79,11 +83,34 @@ public class ActionBar extends JPanel {
 			}
 		});
 		
+		multiplyToDays.addActionListener(evt -> {
+			
+			var row = MainWindow.getInstance().getSelectedRow();
+			
+			if (row.isEmpty()) return;
+			
+			ActivityThreadCard at = row.get();
+			
+			DatePicker.prompt(SimpleDate.today(), "Data di partenza", "OK", optDateStart -> optDateStart.ifPresent(dateStart -> {
+				DatePicker.prompt(SimpleDate.today(), "Data di arrivo", "OK", optDateEnd -> optDateEnd.ifPresent(dateEnd -> {
+					
+					SimpleDate currDate = dateStart;
+					while (currDate.getIntRepr() <= dateEnd.getIntRepr()) {
+						if (currDate.dayOfWeek() < 6) { // SKipping weekends
+							at.cloneActivity(currDate);
+						}
+						currDate = currDate.dayAfter();
+					}
+				}));
+			}));
+		});
 
 		this.add(Box.createHorizontalStrut(10));
 		this.add(addThreadButton);
 		this.add(Box.createHorizontalStrut(10));
 		this.add(exportMissing);
+		this.add(Box.createHorizontalStrut(10));
+		this.add(multiplyToDays);
 		this.add(Box.createHorizontalGlue());
 		
 	}

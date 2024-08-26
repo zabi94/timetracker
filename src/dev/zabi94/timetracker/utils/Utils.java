@@ -2,7 +2,10 @@ package dev.zabi94.timetracker.utils;
 
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.datatransfer.StringSelection;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 import dev.zabi94.timetracker.gui.windows.MainWindow;
 
@@ -24,6 +27,41 @@ public class Utils {
 	public static void copyText(String text) {
 		StringSelection cp = new StringSelection(text);
 		Toolkit.getDefaultToolkit().getSystemClipboard().setContents(cp, cp);
+	}
+	
+	
+	public static void setOnCloseBehaviour(Window window, Runnable onClosed) {
+		window.addWindowListener(new WindowListener() {
+			
+			@Override
+			public void windowOpened(WindowEvent e) {
+			}
+			
+			@Override
+			public void windowIconified(WindowEvent e) {
+			}
+			
+			@Override
+			public void windowDeiconified(WindowEvent e) {
+			}
+			
+			@Override
+			public void windowDeactivated(WindowEvent e) {
+			}
+			
+			@Override
+			public void windowClosing(WindowEvent e) {
+				onClosed.run();
+			}
+			
+			@Override
+			public void windowClosed(WindowEvent e) {
+			}
+			
+			@Override
+			public void windowActivated(WindowEvent e) {
+			}
+		});
 	}
 	
 }

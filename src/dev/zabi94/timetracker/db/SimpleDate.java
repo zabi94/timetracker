@@ -52,4 +52,9 @@ public record SimpleDate(int day, int month, int year) {
 		return new SimpleDate(d.get(ChronoField.DAY_OF_MONTH), d.get(ChronoField.MONTH_OF_YEAR), d.get(ChronoField.YEAR));
 	}
 	
+	public int dayOfWeek() {
+		ZonedDateTime d = ZonedDateTime.of(year, month, day, 0, 0, 0, 0, ZoneId.systemDefault());
+		return d.getDayOfWeek().getValue();
+	}
+	
 }
