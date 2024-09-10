@@ -18,7 +18,10 @@ public class Icons {
 	public static final Icon NEW_ACTIVITY = fromResource("/icons/new_activity.png", ICON_SIZE);
 	public static final Icon EXPORT = fromResource("/icons/export.png", ICON_SIZE);
 	public static final Icon SAVE = fromResource("/icons/save.png", ICON_SIZE);
+	public static final Icon SAVE_AND_CLOSE = fromResource("/icons/save_close.png", ICON_SIZE);
 	public static final Icon MULTI = fromResource("/icons/multi.png", ICON_SIZE);
+	public static final Icon LINK = fromResource("/icons/link.png", ICON_SIZE);
+	public static final Icon EDIT = fromResource("/icons/edit.png", ICON_SIZE);
 	
 	private static ImageIcon fromResource(String resource, int size) {
 		

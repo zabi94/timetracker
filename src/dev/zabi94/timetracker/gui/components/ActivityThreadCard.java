@@ -7,8 +7,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.sql.SQLException;
 
 import javax.swing.AbstractAction;
@@ -27,44 +25,36 @@ import dev.zabi94.timetracker.RegistrationStatus;
 import dev.zabi94.timetracker.db.SimpleDate;
 import dev.zabi94.timetracker.entity.Activity;
 import dev.zabi94.timetracker.entity.ActivityThread;
-import dev.zabi94.timetracker.gui.AppStyle;
 import dev.zabi94.timetracker.gui.ErrorHandler;
+import dev.zabi94.timetracker.gui.components.SelectableListElementController.SelectableListController;
 import dev.zabi94.timetracker.gui.windows.ActivityThreadWindow;
 import dev.zabi94.timetracker.gui.windows.ActivityWindow;
 import dev.zabi94.timetracker.gui.windows.MainWindow;
 import dev.zabi94.timetracker.utils.Utils;
 
-public class ActivityThreadCard extends JPanel implements MouseListener {
+public class ActivityThreadCard extends JPanel {
 
 	private static final long serialVersionUID = -2666663882262854246L;
 	private static final Dimension MAX_SIZE = new Dimension(Integer.MAX_VALUE, 20);
 	private static final Font ROW_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 14);
 
 	private final ActivityThread thread;
-	private final boolean zebra;
-
-	private boolean selected = false, hovered = false;
-	private long lastClick;
+	private final SelectableListElementController<ActivityThreadCard> listElementController;
 
 	private final JLabel customer_label = new JLabel("", SwingConstants.CENTER);
 	private final JLabel description_label = new JLabel();
 	private final JLabel timecount_label = new JLabel();
 	private final JPopupMenu contextual_menu = new JPopupMenu();
 
-	public ActivityThreadCard(ActivityThread at, boolean zebraType) {
+	public ActivityThreadCard(ActivityThread at, SelectableListController<ActivityThreadCard> listController) {
 		this.thread = at;
-		this.zebra = zebraType;
 
 		this.setBorder(new EmptyBorder(2, 5, 2, 5));
 		this.setLayout(new GridBagLayout());
 		this.setMaximumSize(MAX_SIZE);
 		this.setSize(this.getPreferredSize());
-
-		if (zebraType) {
-			this.setBackground(AppStyle.BG_ZEBRA_1); 
-		} else {
-			this.setBackground(AppStyle.BG_ZEBRA_2); 
-		}
+		
+		listElementController = listController.enroll(this, () -> MainWindow.getInstance().selectRow(this), () -> this.openWindow());
 
 		customer_label.setText(thread.getCustomer());
 		customer_label.setMinimumSize(new Dimension(80, customer_label.getPreferredSize().height));
@@ -177,66 +167,6 @@ public class ActivityThreadCard extends JPanel implements MouseListener {
 
 	}
 
-	public void init() {
-		this.addMouseListener(this);
-	}
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-
-		if (System.currentTimeMillis() - lastClick < 300) {
-			openWindow();
-			lastClick = System.currentTimeMillis();
-			return;
-		}
-
-		lastClick = System.currentTimeMillis();
-		MainWindow.getInstance().selectRow(this);
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		this.hovered = true;
-		updateBackground();
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		this.hovered = false;
-		updateBackground();
-	}
-
-	public void setSelected(boolean selected) {
-		this.selected = selected;
-		updateBackground();
-	}
-
-	private void updateBackground() {
-		if (selected) {
-			this.setBackground(AppStyle.BG_SELECTED);
-		} else if (hovered) {
-			this.setBackground(AppStyle.BG_HOVER);
-		} else if (zebra) {
-			this.setBackground(AppStyle.BG_ZEBRA_1);
-		} else {
-			this.setBackground(AppStyle.BG_ZEBRA_2);
-		}
-	}
-
-	public boolean isSelected() {
-		return selected;
-	}
-
 	public void openWindow() {
 		new ActivityThreadWindow(this.thread);
 	}
@@ -275,5 +205,9 @@ public class ActivityThreadCard extends JPanel implements MouseListener {
 			return;
 		}
 	}
-
+	
+	public boolean isSelected() {
+		return this.listElementController.isSelected();
+	}
+	
 }

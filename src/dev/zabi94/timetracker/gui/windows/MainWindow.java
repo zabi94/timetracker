@@ -7,11 +7,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import javax.swing.BorderFactory;
@@ -29,6 +25,7 @@ import dev.zabi94.timetracker.gui.ErrorHandler;
 import dev.zabi94.timetracker.gui.Icons;
 import dev.zabi94.timetracker.gui.components.ActionBar;
 import dev.zabi94.timetracker.gui.components.ActivityThreadCard;
+import dev.zabi94.timetracker.gui.components.SelectableListElementController.SelectableListController;
 import dev.zabi94.timetracker.utils.Utils;
 
 public class MainWindow extends JFrame {
@@ -46,9 +43,9 @@ public class MainWindow extends JFrame {
 	private JButton date_before = new JButton(Icons.ARROW_LEFT);
 	private JButton date_after = new JButton(Icons.ARROW_RIGHT);
 	private JButton date_today = new JButton("Oggi");
-	private List<ActivityThreadCard> cards = new ArrayList<>();
 	private ActionBar actionBar;
 	private SimpleDate date;
+	private SelectableListController<ActivityThreadCard> listController;
 	
 	public MainWindow(SimpleDate date) throws SQLException {
 		
@@ -152,33 +149,9 @@ public class MainWindow extends JFrame {
 		
 		activity_panel.add(Box.createVerticalGlue());
 		
-		date_label.addMouseListener(new MouseListener() {
-			
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				
-			}
-			
-			@Override
-			public void mousePressed(MouseEvent e) {
-				
-			}
-			
-			@Override
-			public void mouseExited(MouseEvent e) {
-				
-			}
-			
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				
-			}
-			
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				final SimpleDate current = INSTANCE.getSelectedDate();
-				DatePicker.prompt(current, "Seleziona data", "vai", date -> MainWindow.getInstance().setDate(date.orElse(current)));
-			}
+		Utils.setOnClickBehaviour(date_label, () -> {
+			final SimpleDate current = INSTANCE.getSelectedDate();
+			DatePicker.prompt(current, "Seleziona data", "vai", dateSelected -> MainWindow.getInstance().setDate(dateSelected.orElse(current)));
 		});
 		
 		loadContents(date);
@@ -189,13 +162,12 @@ public class MainWindow extends JFrame {
 
 	
 	public void selectRow(ActivityThreadCard atc) {
-		cards.forEach(c -> c.setSelected(false));
-		if (atc != null) atc.setSelected(true);
 		actionBar.onActivityThreadSelected(atc);
 	}
 	
 	public Optional<ActivityThreadCard> getSelectedRow() {
-		return cards.stream().filter(c -> c.isSelected()).findAny();
+		if (listController == null) return Optional.empty();
+		return Optional.of(listController.getSelectedElement());
 	}
 	
 	public SimpleDate getSelectedDate() {
@@ -212,16 +184,14 @@ public class MainWindow extends JFrame {
 		}
 
 		selectRow(null);
-		cards.clear();
 
-		int[] counter = {0};
 		int[] quarters = {0};
 		
+		listController = new SelectableListController<ActivityThreadCard>(t -> {});
+		
 		ActivityThread.findByDate(date).forEach(at -> {
-			ActivityThreadCard atc = new ActivityThreadCard(at, (counter[0]++%2)==0);
-			cards.add(atc);
+			ActivityThreadCard atc = new ActivityThreadCard(at, listController);
 			activity_panel.add(atc);
-			atc.init();
 			try {
 				quarters[0] += at.getQuarters();
 			} catch (SQLException e) {

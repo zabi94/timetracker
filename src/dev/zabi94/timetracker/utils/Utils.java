@@ -1,9 +1,13 @@
 package dev.zabi94.timetracker.utils;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.datatransfer.StringSelection;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
@@ -62,6 +66,84 @@ public class Utils {
 			public void windowActivated(WindowEvent e) {
 			}
 		});
+	}
+	
+	public static void setOnClickBehaviour(Component component, Runnable onClicked) {
+		component.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {
+				
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				onClicked.run();
+			}
+		});
+	}
+	
+	public static void setOnDoubleClickBehaviour(Component component, Runnable onDoubleClicked) {
+		component.addMouseListener(new MouseListener() {
+			
+			long lastClickTime = 0;
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {
+				
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				long now = System.currentTimeMillis();
+				if (now - lastClickTime < 400) {
+					onDoubleClicked.run();
+				}
+				lastClickTime = now;
+			}
+		});
+	}
+
+	public static Color moduleIntensity(Color from, float amount) {
+		int r = from.getRed();
+		int g = from.getGreen();
+		int b = from.getBlue();
+		
+		r = Math.min((int) (r * amount), 255);
+		g = Math.min((int) (g * amount), 255);
+		b = Math.min((int) (b * amount), 255);
+		
+		return new Color(r, g, b);
 	}
 	
 }
