@@ -11,6 +11,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 import java.awt.event.WindowListener;
+import java.util.Iterator;
 
 import dev.zabi94.timetracker.gui.windows.MainWindow;
 
@@ -162,6 +163,18 @@ public class Utils {
 		b = Math.min((int) (b * amount), 255);
 		
 		return new Color(r, g, b);
+	}
+	
+	public static String implode(String separator, Iterable<?> stuff) {
+		StringBuilder sb = new StringBuilder();
+		Iterator<?> it = stuff.iterator();
+		while (it.hasNext()) {
+			sb.append(it.next());
+			if (it.hasNext()) {
+				sb.append(separator);
+			}
+		}
+		return sb.toString();
 	}
 	
 }

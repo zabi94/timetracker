@@ -2,15 +2,23 @@ package dev.zabi94.timetracker.entity;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-import dev.zabi94.timetracker.db.DBSerializable;
+import dev.zabi94.timetracker.db.DBAutoSerializable;
 import dev.zabi94.timetracker.db.Data;
+import dev.zabi94.timetracker.db.autoload.AutoEntity;
+import dev.zabi94.timetracker.db.autoload.AutoField;
 
-public class Activity extends DBSerializable {
+@AutoEntity("activity")
+public class Activity extends DBAutoSerializable {
 	
-	private int activityID, quarters;
+	@AutoField("activity_ID")
+	private Integer activityID;
+	
+	@AutoField("quarters")
+	private Integer quarters;
+	
+	@AutoField("description")
 	private String description;
 	
 	public Activity(int id) throws SQLException {
@@ -29,43 +37,6 @@ public class Activity extends DBSerializable {
 		}
 	}
 
-	@Override
-	protected void db_update() throws SQLException {
-		String sql = "UPDATE activity SET description = ?, quarters = ?, activity_ID = ? WHERE ROWID = ?";
-		Data.executeUpdate(sql, description, quarters, activityID, ID);
-	}
-
-	@Override
-	protected void db_insert() throws SQLException {
-		String sql = "INSERT INTO activity(activity_ID, description, quarters) VALUES (?,?,?) RETURNING ROWID";
-		Data.executeQuery(sql, rs -> {
-			Data.getRows(rs).forEach(row -> {
-				this.ID = Integer.parseInt(row.get("rowid"));
-			});
-		}, activityID, description, quarters);
-	}
-
-	@Override
-	public void db_load() throws SQLException {
-		String sql = "SELECT * FROM activity WHERE ROWID = ?";
-		Data.executeQuery(sql, rs -> {
-			List<HashMap<String, String>> map = Data.getRows(rs);
-			
-			if (map.isEmpty()) throw new RuntimeException("Missing ID in DB: "+this.ID);
-			
-			map.forEach(row -> {
-				this.activityID = Integer.parseInt(row.get("activity_ID"));
-				this.description = row.get("description");
-				this.quarters = Integer.parseInt(row.get("quarters"));
-			});
-		}, ID);
-	}
-
-	@Override
-	public void db_delete() throws SQLException {
-		String sql = "DELETE FROM activity WHERE ROWID = ?";
-		Data.executeUpdate(sql, ID);
-	}
 	
 	public static List<Activity> fromActivityThread(ActivityThread at) throws SQLException {
 		String sql = "SELECT ROWID FROM activity WHERE activity_ID = ?";
