@@ -9,6 +9,7 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 import java.awt.event.WindowListener;
 
 import dev.zabi94.timetracker.gui.windows.MainWindow;
@@ -130,6 +131,23 @@ public class Utils {
 					onDoubleClicked.run();
 				}
 				lastClickTime = now;
+			}
+		});
+	}
+	
+	public static void setCloseOnLostFocus(Window window) {
+		window.setAlwaysOnTop(true);
+		window.addWindowFocusListener(new WindowFocusListener() {
+			
+			@Override
+			public void windowLostFocus(WindowEvent e) {
+				window.setVisible(false);
+				window.dispose();
+			}
+			
+			@Override
+			public void windowGainedFocus(WindowEvent e) {
+				//NO-OP
 			}
 		});
 	}

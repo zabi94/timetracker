@@ -120,6 +120,8 @@ public class DatePicker extends JDialog {
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		this.setVisible(true);
+		this.requestFocus();
+		Utils.setCloseOnLostFocus(this);
 		
 	}
 	
