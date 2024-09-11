@@ -22,6 +22,7 @@ public class Icons {
 	public static final Icon MULTI = fromResource("/icons/multi.png", ICON_SIZE);
 	public static final Icon LINK = fromResource("/icons/link.png", ICON_SIZE);
 	public static final Icon EDIT = fromResource("/icons/edit.png", ICON_SIZE);
+	public static final Icon HISTORY = fromResource("/icons/history.png", ICON_SIZE);
 	
 	private static ImageIcon fromResource(String resource, int size) {
 		

@@ -1,8 +1,6 @@
 package dev.zabi94.timetracker.gui.components;
 
 import java.awt.Component;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.sql.SQLException;
 
 import javax.swing.BorderFactory;
@@ -14,8 +12,8 @@ import javax.swing.border.EtchedBorder;
 
 import dev.zabi94.timetracker.entity.Activity;
 import dev.zabi94.timetracker.entity.ActivityThread;
-import dev.zabi94.timetracker.gui.AppStyle;
 import dev.zabi94.timetracker.gui.ErrorHandler;
+import dev.zabi94.timetracker.gui.components.SelectableListElementController.SelectableListController;
 import dev.zabi94.timetracker.gui.windows.ActivityWindow;
 import dev.zabi94.timetracker.utils.Utils;
 
@@ -40,12 +38,11 @@ public class ActivityListPanel extends JPanel {
 			this.remove(c);
 		}
 		
+		SelectableListController<ActivityListElement> slc = new SelectableListController<>();
+		
 		try {
-			int i = 0;
 			for (Activity act: thread.activities()) {
-				this.add(new ActivityListElement(act, i%2!=0));
-				this.add(Box.createVerticalStrut(3));
-				i++;
+				this.add(new ActivityListElement(act, slc));
 			}
 			this.add(Box.createVerticalGlue());
 		} catch (SQLException e) {
@@ -54,7 +51,7 @@ public class ActivityListPanel extends JPanel {
 		
 	}
 	
-	public static class ActivityListElement extends JPanel implements MouseListener {
+	public static class ActivityListElement extends JPanel {
 
 		private static final long serialVersionUID = 6333444663467719369L;
 		
@@ -62,14 +59,10 @@ public class ActivityListPanel extends JPanel {
 		
 		private final JLabel description = new JLabel(), time = new JLabel();
 		
-		private final boolean zebra;
-		
-		private boolean hovered = false, selected = false;
-		private long lastClick;
-		
-		public ActivityListElement(Activity activity, boolean zebra) {
+		public ActivityListElement(Activity activity, SelectableListController<ActivityListElement> slc) {
 			this.activity = activity;
-			this.zebra = zebra;
+
+			slc.enroll(this, () -> {}, () -> new ActivityWindow(activity, this));
 			
 			this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 			
@@ -79,59 +72,8 @@ public class ActivityListPanel extends JPanel {
 			this.add(Box.createHorizontalGlue());
 			this.add(time);
 			
-			this.addMouseListener(this);
-			updateBackground();
+			this.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 			
-		}
-
-		@Override
-		public void mouseClicked(MouseEvent e) {
-			
-			if (System.currentTimeMillis() - lastClick < 300) {
-				lastClick = System.currentTimeMillis();
-				new ActivityWindow(activity, this);
-				return;
-			}
-			lastClick = System.currentTimeMillis();
-		}
-
-		@Override
-		public void mousePressed(MouseEvent e) {
-			
-		}
-
-		@Override
-		public void mouseReleased(MouseEvent e) {
-			
-		}
-
-		@Override
-		public void mouseEntered(MouseEvent e) {
-			this.hovered = true;
-			updateBackground();
-		}
-
-		@Override
-		public void mouseExited(MouseEvent e) {
-			this.hovered = false;
-			updateBackground();
-		}
-		
-		public void setSelected(boolean selected) {
-			this.selected = selected;
-			updateBackground();
-		}
-		
-		private void updateBackground() {
-			if (selected) {
-				this.setBackground(AppStyle.BG_SELECTED);
-			} else if (hovered) {
-				this.setBackground(AppStyle.BG_HOVER);
-			} else if (zebra) {
-				this.setBackground(AppStyle.BG_ZEBRA_1);
-			} else {
-				this.setBackground(AppStyle.BG_ZEBRA_2);
-			}
 		}
 
 		public void reload() {

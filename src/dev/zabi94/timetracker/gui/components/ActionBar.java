@@ -19,6 +19,7 @@ import dev.zabi94.timetracker.gui.Icons;
 import dev.zabi94.timetracker.gui.windows.ActivityThreadWindow;
 import dev.zabi94.timetracker.gui.windows.DatePicker;
 import dev.zabi94.timetracker.gui.windows.MainWindow;
+import dev.zabi94.timetracker.gui.windows.UnregisteredActivities;
 import dev.zabi94.timetracker.utils.Utils;
 
 public class ActionBar extends JPanel {
@@ -28,6 +29,7 @@ public class ActionBar extends JPanel {
 	private JButton addThreadButton = new JButton(Icons.NEW_ACTIVITY);
 	private JButton exportMissing = new JButton(Icons.EXPORT);
 	private JButton multiplyToDays = new JButton(Icons.MULTI);
+	private JButton missingThreads = new JButton(Icons.HISTORY);
 	
 	public ActionBar() {
 		
@@ -37,6 +39,7 @@ public class ActionBar extends JPanel {
 		addThreadButton.setToolTipText("Nuova attività");
 		exportMissing.setToolTipText("Esporta richieste");
 		multiplyToDays.setToolTipText("Inserimento multiplo");
+		missingThreads.setToolTipText("Attività non registrate");
 		
 		addThreadButton.addActionListener(e -> {
 			ActivityThread act = new ActivityThread();
@@ -104,6 +107,10 @@ public class ActionBar extends JPanel {
 				}));
 			}));
 		});
+		
+		missingThreads.addActionListener(evt -> {
+			UnregisteredActivities.getWindow().setVisible(true);
+		});
 
 		this.add(Box.createHorizontalStrut(10));
 		this.add(addThreadButton);
@@ -111,6 +118,8 @@ public class ActionBar extends JPanel {
 		this.add(exportMissing);
 		this.add(Box.createHorizontalStrut(10));
 		this.add(multiplyToDays);
+		this.add(Box.createHorizontalStrut(10));
+		this.add(missingThreads);
 		this.add(Box.createHorizontalGlue());
 		
 	}

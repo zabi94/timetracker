@@ -9,6 +9,7 @@ import dev.zabi94.timetracker.RegistrationStatus;
 import dev.zabi94.timetracker.db.DBSerializable;
 import dev.zabi94.timetracker.db.Data;
 import dev.zabi94.timetracker.db.SimpleDate;
+import dev.zabi94.timetracker.gui.ErrorHandler;
 
 public class ActivityThread extends DBSerializable {
 	
@@ -120,6 +121,30 @@ public class ActivityThread extends DBSerializable {
 					.forEach(a -> activities.add(a));
 		}, date.getIntRepr());
 		return activities;
+	}
+	
+	public static List<ActivityThread> findUnregistered() {
+		
+		List<ActivityThread> activityList = new ArrayList<>();
+		
+		try {
+			Data.executeQuery("select ROWID, * from activity_thread where status <= 2 order by day desc", rs -> {
+
+				for (HashMap<String,String> row: Data.getRows(rs)) {
+					int id = Integer.parseInt(row.get("rowid"));
+					try {
+						activityList.add(new ActivityThread(id));
+					} catch (SQLException e) {
+						throw new RuntimeException(e);
+					}
+				}
+				
+			});
+		} catch (Exception e) {
+			ErrorHandler.showErrorWindow("Impossibile esportare le richieste: "+e.getMessage());
+		}
+		
+		return activityList;
 	}
 	
 	public List<Activity> activities() throws SQLException {

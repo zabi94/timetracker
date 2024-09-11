@@ -4,6 +4,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -38,6 +39,7 @@ public class ActivityThreadWindow extends JFrame {
 	private final JTextField customer = new JTextField();
 	private final ActivityListPanel activities;
 	private final JComboBox<RegistrationStatus> status = new JComboBox<RegistrationStatus>(RegistrationStatus.values());
+	private final ArrayList<Runnable> onChangeListeners = new ArrayList<>();
 	
 	public ActivityThreadWindow(ActivityThread activity) {
 		this.activity = activity;
@@ -146,6 +148,7 @@ public class ActivityThreadWindow extends JFrame {
 				this.setVisible(false);
 				this.dispose();
 				MainWindow.getInstance().setDate(MainWindow.getInstance().getSelectedDate());
+				onChangeListeners.forEach(r -> r.run());
 			} catch (SQLException e) {
 				ErrorHandler.showErrorWindow("Errore nel salvataggio: "+e.getMessage());
 			}
@@ -153,6 +156,10 @@ public class ActivityThreadWindow extends JFrame {
 		
 		this.setVisible(true);
 		
+	}
+
+	public void addOnChangeListener(Runnable onChange) {
+		onChangeListeners.add(onChange);
 	}
 
 }
