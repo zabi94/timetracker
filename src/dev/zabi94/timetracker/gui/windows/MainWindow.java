@@ -167,7 +167,7 @@ public class MainWindow extends JFrame {
 	
 	public Optional<ActivityThreadCard> getSelectedRow() {
 		if (listController == null) return Optional.empty();
-		return Optional.of(listController.getSelectedElement());
+		return Optional.ofNullable(listController.getSelectedElement());
 	}
 	
 	public SimpleDate getSelectedDate() {
