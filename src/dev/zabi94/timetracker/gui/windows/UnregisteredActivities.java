@@ -70,7 +70,7 @@ public class UnregisteredActivities extends JPanel {
 	public class UregisteredActivityRow extends JPanel {
 
 		private static final long serialVersionUID = -2604515117042567536L;
-		private static final Dimension MARKER_DIM = new Dimension(10, 10);
+		private static final Dimension MARKER_DIM = new Dimension(12, 12);
 		private static final Dimension DESCRIPTION_MAX_DIM = new Dimension(220, Integer.MAX_VALUE);
 		private static final Dimension CUSTOMER_MAX_DIM = new Dimension(60, Integer.MAX_VALUE);
 		
@@ -87,7 +87,7 @@ public class UnregisteredActivities extends JPanel {
 			marker.setPreferredSize(MARKER_DIM);
 			marker.setSize(MARKER_DIM);
 			marker.setBackground(thread.getStatus().getColor());
-			marker.setBorder(BorderFactory.createRaisedBevelBorder());
+			marker.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, getForeground()));
 			
 			description.setMaximumSize(DESCRIPTION_MAX_DIM);
 			description.setPreferredSize(new Dimension(DESCRIPTION_MAX_DIM.width, description.getSize().height));

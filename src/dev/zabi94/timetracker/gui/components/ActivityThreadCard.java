@@ -36,7 +36,7 @@ public class ActivityThreadCard extends JPanel {
 
 	private static final long serialVersionUID = -2666663882262854246L;
 	private static final Dimension MAX_SIZE = new Dimension(Integer.MAX_VALUE, 40);
-	private static final Dimension MARKER_SIZE = new Dimension(20,20);
+	private static final Dimension MARKER_SIZE = new Dimension(16, 16);
 	private static final Font ROW_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 14);
 
 	private final ActivityThread thread;
@@ -112,7 +112,7 @@ public class ActivityThreadCard extends JPanel {
 		box.setPreferredSize(MARKER_SIZE);
 		box.setSize(MARKER_SIZE);
 		box.setBackground(at.getStatus().getColor());
-		box.setBorder(BorderFactory.createRaisedBevelBorder());
+		box.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, getForeground()));
 		this.add(box, c);
 
 		JMenuItem editThread = new JMenuItem("Modifica");
