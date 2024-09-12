@@ -18,7 +18,7 @@ import dev.zabi94.timetracker.utils.Utils;
 
 public class UnregisteredActivities extends JPanel {
 
-	private static final int DW = 300;
+	private static final int DW = 500;
 	private static final int DH = 400;
 	private static final long serialVersionUID = -40529971298085401L;
 	
@@ -71,6 +71,8 @@ public class UnregisteredActivities extends JPanel {
 
 		private static final long serialVersionUID = -2604515117042567536L;
 		private static final Dimension MARKER_DIM = new Dimension(10, 10);
+		private static final Dimension DESCRIPTION_MAX_DIM = new Dimension(220, Integer.MAX_VALUE);
+		private static final Dimension CUSTOMER_MAX_DIM = new Dimension(60, Integer.MAX_VALUE);
 		
 		public UregisteredActivityRow(UnregisteredActivities parent, ActivityThread thread, SelectableListController<UregisteredActivityRow> slc) throws SQLException {
 			this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
@@ -86,6 +88,12 @@ public class UnregisteredActivities extends JPanel {
 			marker.setSize(MARKER_DIM);
 			marker.setBackground(thread.getStatus().getColor());
 			marker.setBorder(BorderFactory.createRaisedBevelBorder());
+			
+			description.setMaximumSize(DESCRIPTION_MAX_DIM);
+			description.setPreferredSize(new Dimension(DESCRIPTION_MAX_DIM.width, description.getSize().height));
+			
+			customer.setMaximumSize(CUSTOMER_MAX_DIM);
+			customer.setPreferredSize(new Dimension(CUSTOMER_MAX_DIM.width, customer.getSize().height));
 			
 			this.add(marker);
 			this.add(Box.createHorizontalStrut(10));
