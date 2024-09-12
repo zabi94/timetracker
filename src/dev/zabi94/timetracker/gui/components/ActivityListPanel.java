@@ -44,7 +44,6 @@ public class ActivityListPanel extends JPanel {
 			for (Activity act: thread.activities()) {
 				this.add(new ActivityListElement(act, slc));
 			}
-			this.add(Box.createVerticalGlue());
 		} catch (SQLException e) {
 			ErrorHandler.showErrorWindow("Impossibile caricare interventi: "+e.getMessage());
 		}

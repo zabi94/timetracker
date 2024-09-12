@@ -70,6 +70,7 @@ public class UnregisteredActivities extends JPanel {
 	public class UregisteredActivityRow extends JPanel {
 
 		private static final long serialVersionUID = -2604515117042567536L;
+		private static final Dimension MARKER_DIM = new Dimension(10, 10);
 		
 		public UregisteredActivityRow(UnregisteredActivities parent, ActivityThread thread, SelectableListController<UregisteredActivityRow> slc) throws SQLException {
 			this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
@@ -79,8 +80,12 @@ public class UnregisteredActivities extends JPanel {
 			JLabel date = new JLabel(thread.getDate().toString());
 			JLabel customer = new JLabel(thread.getCustomer());
 			JPanel marker = new JPanel();
-			marker.setMaximumSize(new Dimension(10, 10));
+			marker.setMaximumSize(MARKER_DIM);
+			marker.setMinimumSize(MARKER_DIM);
+			marker.setPreferredSize(MARKER_DIM);
+			marker.setSize(MARKER_DIM);
 			marker.setBackground(thread.getStatus().getColor());
+			marker.setBorder(BorderFactory.createRaisedBevelBorder());
 			
 			this.add(marker);
 			this.add(Box.createHorizontalStrut(10));
@@ -98,7 +103,7 @@ public class UnregisteredActivities extends JPanel {
 				atw.addOnChangeListener(() -> parent.reload());
 			});
 			
-			this.setMaximumSize(new Dimension(Integer.MAX_VALUE, (int) this.getPreferredSize().getHeight()));
+			this.setMaximumSize(new Dimension(Integer.MAX_VALUE, (int) this.getPreferredSize().getHeight() + 10));
 		}
 		
 	}

@@ -1,6 +1,5 @@
 package dev.zabi94.timetracker.gui.components;
 
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -11,6 +10,7 @@ import java.sql.SQLException;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -35,7 +35,8 @@ import dev.zabi94.timetracker.utils.Utils;
 public class ActivityThreadCard extends JPanel {
 
 	private static final long serialVersionUID = -2666663882262854246L;
-	private static final Dimension MAX_SIZE = new Dimension(Integer.MAX_VALUE, 20);
+	private static final Dimension MAX_SIZE = new Dimension(Integer.MAX_VALUE, 40);
+	private static final Dimension MARKER_SIZE = new Dimension(20,20);
 	private static final Font ROW_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 14);
 
 	private final ActivityThread thread;
@@ -102,9 +103,13 @@ public class ActivityThreadCard extends JPanel {
 		c.gridx = 3;
 		c.anchor = GridBagConstraints.LINE_END;
 		c.insets = new Insets(0, 20, 0, 0);
-		c.fill = GridBagConstraints.BOTH;
-		Component box = new JPanel();
+		JPanel box = new JPanel();
+		box.setMaximumSize(MARKER_SIZE);
+		box.setMinimumSize(MARKER_SIZE);
+		box.setPreferredSize(MARKER_SIZE);
+		box.setSize(MARKER_SIZE);
 		box.setBackground(at.getStatus().getColor());
+		box.setBorder(BorderFactory.createRaisedBevelBorder());
 		this.add(box, c);
 
 		JMenuItem editThread = new JMenuItem("Modifica");
