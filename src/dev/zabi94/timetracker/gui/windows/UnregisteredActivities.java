@@ -105,7 +105,10 @@ public class UnregisteredActivities extends JPanel {
 			this.add(Box.createHorizontalGlue());
 			this.add(time);
 			
-			this.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+			this.setBorder(BorderFactory.createCompoundBorder(
+					BorderFactory.createMatteBorder(0, 0, 1, 0, getBackground().darker()),
+					BorderFactory.createEmptyBorder(5, 5, 5, 5)
+			));
 			slc.enroll(this, () -> {}, () -> {
 				ActivityThreadWindow atw = new ActivityThreadWindow(thread);
 				atw.addOnChangeListener(() -> parent.reload());
