@@ -50,7 +50,10 @@ public class ActivityThreadCard extends JPanel {
 	public ActivityThreadCard(ActivityThread at, SelectableListController<ActivityThreadCard> listController) {
 		this.thread = at;
 
-		this.setBorder(new EmptyBorder(2, 5, 2, 5));
+		this.setBorder(BorderFactory.createCompoundBorder(
+				BorderFactory.createMatteBorder(0, 0, 1, 0, getBackground().darker()), 
+				new EmptyBorder(2, 5, 2, 5)
+		));
 		this.setLayout(new GridBagLayout());
 		this.setMaximumSize(MAX_SIZE);
 		this.setSize(this.getPreferredSize());
