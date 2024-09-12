@@ -44,9 +44,9 @@ public class Activity extends DBAutoSerializable {
 		Data.executeQuery(sql, rs -> {
 			Data.getRows(rs).stream()
 					.map(hm -> hm.get("rowid"))
-					.map(sid -> Integer.parseInt(sid))
-					.map(id -> fromID(id))
-					.forEach(a -> activities.add(a));
+					.map(Integer::parseInt)
+					.map(Activity::fromID)
+					.forEach(activities::add);
 		}, at.db_id());
 		return activities;
 	}
