@@ -78,14 +78,16 @@ public class SelectableListElementController<T extends Component> implements Mou
 	
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		long now = System.currentTimeMillis();
-		if (now - lastClickTime < 400) {
-			onDoubleClick.run();
+		if (e.getButton() == 1) {
+			long now = System.currentTimeMillis();
+			if (now - lastClickTime < 400) {
+				onDoubleClick.run();
+			}
+			lastClickTime = now;
 		}
 		onClick.run();
 		controller.onElementClicked(this);
 		setSelected(true);
-		lastClickTime = now;
 	}
 
 	@Override
