@@ -17,6 +17,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 
 import dev.zabi94.timetracker.RegistrationStatus;
+import dev.zabi94.timetracker.entity.Activity;
 import dev.zabi94.timetracker.entity.ActivityThread;
 import dev.zabi94.timetracker.gui.ErrorHandler;
 import dev.zabi94.timetracker.gui.GenericHandlers;
@@ -141,6 +142,9 @@ public class ActivityThreadWindow extends JFrame {
 		
 		save.addActionListener(evt -> {
 			try {
+				
+				boolean isFirstSave = activity.db_id() <= 0;
+				
 				this.activity.setCustomer(this.customer.getText())
 					.setDescription(description.getText())
 					.setStatus((RegistrationStatus) status.getSelectedItem())
@@ -149,6 +153,15 @@ public class ActivityThreadWindow extends JFrame {
 				this.dispose();
 				MainWindow.getInstance().setDate(MainWindow.getInstance().getSelectedDate());
 				onChangeListeners.forEach(r -> r.run());
+				
+				if (isFirstSave) {
+					Activity act = new Activity();
+					act.setActivityID(this.activity.db_id());
+					act.setDescription(this.activity.getDescription());
+					ActivityWindow aw = new ActivityWindow(act, null);
+					aw.setTitle("Primo intervento");
+				}
+				
 			} catch (SQLException e) {
 				ErrorHandler.showErrorWindow("Errore nel salvataggio: "+e.getMessage());
 			}
