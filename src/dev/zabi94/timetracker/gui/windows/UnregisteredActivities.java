@@ -9,10 +9,14 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 
+import dev.zabi94.timetracker.RegistrationStatus;
 import dev.zabi94.timetracker.entity.ActivityThread;
+import dev.zabi94.timetracker.gui.ErrorHandler;
 import dev.zabi94.timetracker.gui.components.SelectableListElementController.SelectableListController;
 import dev.zabi94.timetracker.utils.Utils;
 
@@ -115,6 +119,34 @@ public class UnregisteredActivities extends JPanel {
 			});
 			
 			this.setMaximumSize(new Dimension(Integer.MAX_VALUE, (int) this.getPreferredSize().getHeight() + 10));
+			
+			JPopupMenu change_state_menu = new JPopupMenu();
+			
+			for (RegistrationStatus rs:RegistrationStatus.values()) {
+
+				JMenuItem mi = new JMenuItem(rs.toString());
+
+				if (thread.getStatus() == rs) {
+					mi.setEnabled(false);
+				}
+
+				mi.addActionListener(evt -> {
+					thread.setStatus(rs);
+					try {
+						thread.db_persist();
+					} catch (SQLException e) {
+						ErrorHandler.showErrorWindow("Impossibile cambiare stato: "+e.getMessage());
+					}
+					MainWindow.getInstance().setDate(MainWindow.getInstance().getSelectedDate());
+					parent.reload();
+				});
+
+				change_state_menu.add(mi);
+
+			}
+			
+			this.setComponentPopupMenu(change_state_menu);
+			
 		}
 		
 	}
