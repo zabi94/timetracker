@@ -149,7 +149,7 @@ public class MainWindow extends JFrame {
 		
 		activity_panel.add(Box.createVerticalGlue());
 		
-		Utils.setOnClickBehaviour(date_label, () -> {
+		Utils.setOnLeftClickBehaviour(date_label, () -> {
 			final SimpleDate current = INSTANCE.getSelectedDate();
 			DatePicker.prompt(current, "Seleziona data", "vai", dateSelected -> MainWindow.getInstance().setDate(dateSelected.orElse(current)));
 		});

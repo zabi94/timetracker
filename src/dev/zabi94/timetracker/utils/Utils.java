@@ -70,7 +70,7 @@ public class Utils {
 		});
 	}
 	
-	public static void setOnClickBehaviour(Component component, Runnable onClicked) {
+	public static void setOnLeftClickBehaviour(Component component, Runnable onClicked) {
 		component.addMouseListener(new MouseListener() {
 			
 			@Override
@@ -95,7 +95,7 @@ public class Utils {
 			
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				onClicked.run();
+				if (e.getButton() == 1) onClicked.run();
 			}
 		});
 	}
