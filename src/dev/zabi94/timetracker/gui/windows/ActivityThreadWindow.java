@@ -12,11 +12,11 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 
 import dev.zabi94.timetracker.RegistrationStatus;
+import dev.zabi94.timetracker.db.Data;
 import dev.zabi94.timetracker.entity.Activity;
 import dev.zabi94.timetracker.entity.ActivityThread;
 import dev.zabi94.timetracker.gui.ErrorHandler;
@@ -37,7 +37,7 @@ public class ActivityThreadWindow extends JFrame {
 	private final JLabel customer_label = new JLabel("Cliente", SwingConstants.LEFT);
 	private final JLabel activities_label = new JLabel("Interventi", SwingConstants.LEFT);
 	private final JTextArea description = new JTextArea();
-	private final JTextField customer = new JTextField();
+	private final JComboBox<String> customer = new JComboBox<String>();
 	private final ActivityListPanel activities;
 	private final JComboBox<RegistrationStatus> status = new JComboBox<RegistrationStatus>(RegistrationStatus.values());
 	private final ArrayList<Runnable> onChangeListeners = new ArrayList<>();
@@ -66,8 +66,8 @@ public class ActivityThreadWindow extends JFrame {
 		c.anchor = GridBagConstraints.LINE_START;
 		this.add(customer_label, c);
 
-		
-		customer.setText(this.activity.getCustomer());
+		customer.setEditable(true);
+		customer.setSelectedItem(this.activity.getCustomer());
 		c = new GridBagConstraints();
 		c.insets = new Insets(5, 5, 5, 5);
 		c.gridy = 0;
@@ -78,6 +78,22 @@ public class ActivityThreadWindow extends JFrame {
 		c.fill = GridBagConstraints.HORIZONTAL;
 		this.add(customer, c);
 		
+		customer.addItem("");
+		
+		try {
+			Data.executeQuery("select distinct customer from activity_thread", rs -> {
+				try {
+					while (rs.next()) {
+						customer.addItem(rs.getString("customer"));
+					}
+				} catch (SQLException e) {
+					throw new RuntimeException(e);
+				}
+			});
+		} catch (Exception e) {
+			ErrorHandler.showErrorWindow("Impossibile caricare lista clienti");
+			e.printStackTrace();
+		}
 		
 		c = new GridBagConstraints();
 		c.insets = new Insets(5, 5, 0, 5);
@@ -145,7 +161,7 @@ public class ActivityThreadWindow extends JFrame {
 				
 				boolean isFirstSave = activity.db_id() <= 0;
 				
-				this.activity.setCustomer(this.customer.getText())
+				this.activity.setCustomer(this.customer.getSelectedItem().toString())
 					.setDescription(description.getText())
 					.setStatus((RegistrationStatus) status.getSelectedItem())
 					.db_persist();
