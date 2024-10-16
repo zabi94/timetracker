@@ -11,6 +11,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
@@ -20,7 +21,8 @@ import dev.zabi94.timetracker.entity.Activity;
 import dev.zabi94.timetracker.gui.ErrorHandler;
 import dev.zabi94.timetracker.gui.GenericHandlers;
 import dev.zabi94.timetracker.gui.Icons;
-import dev.zabi94.timetracker.gui.components.ActivityListPanel.ActivityListElement;
+import dev.zabi94.timetracker.gui.components.ActivityListInActivityThreadPanel.ActivityListElement;
+import dev.zabi94.timetracker.gui.components.GridUtils;
 import dev.zabi94.timetracker.utils.Utils;
 
 public class ActivityWindow extends JFrame {
@@ -37,6 +39,7 @@ public class ActivityWindow extends JFrame {
 	private final JTextArea description = new JTextArea();
 	private final JSpinner spinner = new JSpinner();
 	private final JButton save = new JButton(Icons.SAVE);
+	private final JButton delete = new JButton(Icons.LINK);
 	
 	public ActivityWindow(Activity activity, ActivityListElement activityListElementIn) {
 		this.activity = activity;
@@ -71,7 +74,6 @@ public class ActivityWindow extends JFrame {
 		description.setText(this.activity.getDescription());
 		description.addKeyListener(GenericHandlers.AVOID_TABS);
 		this.add(description, c);
-		
 
 		c = new GridBagConstraints();
 		c.insets = new Insets(5, 5, 5, 5);
@@ -80,8 +82,13 @@ public class ActivityWindow extends JFrame {
 		c.anchor = GridBagConstraints.LINE_START;
 		c.fill = GridBagConstraints.VERTICAL;
 		c.gridx = 2;
-		save.setToolTipText("Salva su DB");
-		this.add(save,c);
+		save.setToolTipText("Salva");
+		delete.setToolTipText("Elimina");
+		if (activity.db_id() >= 0) {
+			this.add(GridUtils.rowOf(delete, save), c);
+		} else {
+			this.add(save,c);
+		}
 		
 
 		c = new GridBagConstraints();
@@ -133,10 +140,22 @@ public class ActivityWindow extends JFrame {
 				this.activity.db_persist();
 				this.setVisible(false);
 				this.dispose();
-				MainWindow.getInstance().setDate(MainWindow.getInstance().getSelectedDate());
 				this.activityListElement.ifPresent(ale -> ale.reload());
 			} catch (SQLException e) {
 				ErrorHandler.showErrorWindow("Errore nel salvataggio: "+e.getMessage());
+			}
+		});
+		
+		delete.addActionListener(evt -> {
+			int result = JOptionPane.showConfirmDialog(this, "Sicuro di voler eliminare l'intervento?", "Conferma eliminazione", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+			if (result == JOptionPane.YES_OPTION) {
+				try {
+					this.activity.db_delete();
+					this.setVisible(false);
+					this.dispose();
+				} catch (SQLException e) {
+					ErrorHandler.showErrorWindow("Errore nel salvataggio: "+e.getMessage());
+				}
 			}
 		});
 		

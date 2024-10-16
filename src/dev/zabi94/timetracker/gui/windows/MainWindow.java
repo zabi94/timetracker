@@ -9,6 +9,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.sql.SQLException;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -19,10 +20,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import dev.zabi94.timetracker.db.DBSerializable;
 import dev.zabi94.timetracker.db.SimpleDate;
+import dev.zabi94.timetracker.entity.Activity;
 import dev.zabi94.timetracker.entity.ActivityThread;
 import dev.zabi94.timetracker.gui.ErrorHandler;
 import dev.zabi94.timetracker.gui.Icons;
+import dev.zabi94.timetracker.gui.ReloadHandler;
 import dev.zabi94.timetracker.gui.components.ActionBar;
 import dev.zabi94.timetracker.gui.components.ActivityThreadCard;
 import dev.zabi94.timetracker.gui.components.SelectableListElementController.SelectableListController;
@@ -158,6 +162,13 @@ public class MainWindow extends JFrame {
 		
 		this.setVisible(true);
 		
+		Consumer<DBSerializable> onChanges = obj -> {
+			setDate(getSelectedDate());
+		};
+
+		ReloadHandler.subscribeType(Activity.class, onChanges, activity_panel);
+		ReloadHandler.subscribeType(ActivityThread.class, onChanges, activity_panel);
+		
 	}
 
 	
@@ -222,7 +233,7 @@ public class MainWindow extends JFrame {
 	}
 
 
-	public void setDate(SimpleDate date) {
+	private void setDate(SimpleDate date) {
 		this.date = date;
 		try {
 			loadContents(date);

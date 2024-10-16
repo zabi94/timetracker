@@ -147,7 +147,6 @@ public class ActivityThreadCard extends JPanel {
 				} catch (SQLException e) {
 					ErrorHandler.showErrorWindow("Impossibile cambiare stato: "+e.getMessage());
 				}
-				MainWindow.getInstance().setDate(MainWindow.getInstance().getSelectedDate());
 			});
 
 			change_state_submenu.add(mi);
@@ -165,7 +164,6 @@ public class ActivityThreadCard extends JPanel {
 			}
 			try {
 				this.deleteRow();
-				MainWindow.getInstance().setDate(MainWindow.getInstance().getSelectedDate());
 			} catch (SQLException e) {
 				ErrorHandler.showErrorWindow("Errore nell'eliminazione dell'attività: "+e.getMessage());
 			}

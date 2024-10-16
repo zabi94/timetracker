@@ -2,6 +2,7 @@ package dev.zabi94.timetracker.utils;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Window;
@@ -175,6 +176,12 @@ public class Utils {
 			}
 		}
 		return sb.toString();
+	}
+
+	public static void refreshComponent(Component c) {
+		Dimension d = c.getSize();
+		c.setSize(0,0);
+		c.setSize(d);
 	}
 	
 }

@@ -116,7 +116,7 @@ public abstract class DBAutoSerializable extends DBSerializable {
 	}
 
 	@Override
-	public void db_delete() throws SQLException {
+	public void db_drop() throws SQLException {
 		validate();
 		String tableName = this.getClass().getAnnotation(AutoEntity.class).value();
 		String sql = "DELETE FROM "+tableName+" WHERE ROWID = ?";

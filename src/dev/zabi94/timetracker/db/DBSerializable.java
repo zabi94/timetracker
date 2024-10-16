@@ -1,6 +1,9 @@
 package dev.zabi94.timetracker.db;
 
 import java.sql.SQLException;
+import java.util.List;
+
+import dev.zabi94.timetracker.gui.ReloadHandler;
 
 public abstract class DBSerializable {
 	
@@ -22,6 +25,7 @@ public abstract class DBSerializable {
 		} else {
 			db_insert();
 		}
+		ReloadHandler.markChanged(this);
 	}
 
 	protected abstract void db_update() throws SQLException;
@@ -30,10 +34,19 @@ public abstract class DBSerializable {
 	
 	public abstract void db_load() throws SQLException;
 	
-	public abstract void db_delete() throws SQLException;
+	protected abstract void db_drop() throws SQLException;
+	
+	public final void db_delete() throws SQLException {
+		db_delete();
+		ReloadHandler.markChanged(this);
+	}
 	
 	public int db_id() {
 		return ID;
+	}
+	
+	public List<DBSerializable> getChildren() {
+		return List.of();
 	}
 	
 }

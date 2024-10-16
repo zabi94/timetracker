@@ -3,6 +3,7 @@ package dev.zabi94.timetracker.gui.windows;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.sql.SQLException;
+import java.util.function.Consumer;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -15,8 +16,11 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 
 import dev.zabi94.timetracker.RegistrationStatus;
+import dev.zabi94.timetracker.db.DBSerializable;
+import dev.zabi94.timetracker.entity.Activity;
 import dev.zabi94.timetracker.entity.ActivityThread;
 import dev.zabi94.timetracker.gui.ErrorHandler;
+import dev.zabi94.timetracker.gui.ReloadHandler;
 import dev.zabi94.timetracker.gui.components.SelectableListElementController.SelectableListController;
 import dev.zabi94.timetracker.utils.Utils;
 
@@ -35,6 +39,10 @@ public class UnregisteredActivities extends JPanel {
 				BorderFactory.createEtchedBorder()
 		));
 		reload();
+		Consumer<DBSerializable> onChange = s -> reload();
+		
+		ReloadHandler.subscribeType(Activity.class, onChange, this);
+		ReloadHandler.subscribeType(ActivityThread.class, onChange, this);
 	}
 	
 	public static JFrame getWindow() {
@@ -60,7 +68,7 @@ public class UnregisteredActivities extends JPanel {
 		SelectableListController<UregisteredActivityRow> slc = new SelectableListController<>();
 		ActivityThread.findUnregistered().forEach(at -> {
 			try {
-				UregisteredActivityRow row = new UregisteredActivityRow(this, at, slc);
+				UregisteredActivityRow row = new UregisteredActivityRow(at, slc);
 				this.add(row);
 			} catch (SQLException e) {
 				throw new RuntimeException(e);
@@ -78,7 +86,7 @@ public class UnregisteredActivities extends JPanel {
 		private static final Dimension DESCRIPTION_MAX_DIM = new Dimension(220, Integer.MAX_VALUE);
 		private static final Dimension CUSTOMER_MAX_DIM = new Dimension(60, Integer.MAX_VALUE);
 		
-		public UregisteredActivityRow(UnregisteredActivities parent, ActivityThread thread, SelectableListController<UregisteredActivityRow> slc) throws SQLException {
+		public UregisteredActivityRow(ActivityThread thread, SelectableListController<UregisteredActivityRow> slc) throws SQLException {
 			this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 			
 			JLabel description = new JLabel(thread.getDescription());
@@ -114,8 +122,7 @@ public class UnregisteredActivities extends JPanel {
 					BorderFactory.createEmptyBorder(5, 5, 5, 5)
 			));
 			slc.enroll(this, () -> {}, () -> {
-				ActivityThreadWindow atw = new ActivityThreadWindow(thread);
-				atw.addOnChangeListener(() -> parent.reload());
+				new ActivityThreadWindow(thread);
 			});
 			
 			this.setMaximumSize(new Dimension(Integer.MAX_VALUE, (int) this.getPreferredSize().getHeight() + 10));
@@ -137,8 +144,6 @@ public class UnregisteredActivities extends JPanel {
 					} catch (SQLException e) {
 						ErrorHandler.showErrorWindow("Impossibile cambiare stato: "+e.getMessage());
 					}
-					MainWindow.getInstance().setDate(MainWindow.getInstance().getSelectedDate());
-					parent.reload();
 				});
 
 				change_state_menu.add(mi);

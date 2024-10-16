@@ -4,7 +4,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -22,7 +21,7 @@ import dev.zabi94.timetracker.entity.ActivityThread;
 import dev.zabi94.timetracker.gui.ErrorHandler;
 import dev.zabi94.timetracker.gui.GenericHandlers;
 import dev.zabi94.timetracker.gui.Icons;
-import dev.zabi94.timetracker.gui.components.ActivityListPanel;
+import dev.zabi94.timetracker.gui.components.ActivityListInActivityThreadPanel;
 import dev.zabi94.timetracker.utils.Utils;
 
 public class ActivityThreadWindow extends JFrame {
@@ -38,14 +37,13 @@ public class ActivityThreadWindow extends JFrame {
 	private final JLabel activities_label = new JLabel("Interventi", SwingConstants.LEFT);
 	private final JTextArea description = new JTextArea();
 	private final JComboBox<String> customer = new JComboBox<String>();
-	private final ActivityListPanel activities;
+	private final ActivityListInActivityThreadPanel activities;
 	private final JComboBox<RegistrationStatus> status = new JComboBox<RegistrationStatus>(RegistrationStatus.values());
-	private final ArrayList<Runnable> onChangeListeners = new ArrayList<>();
 	
 	public ActivityThreadWindow(ActivityThread activity) {
 		this.activity = activity;
 		
-		activities = new ActivityListPanel(activity);
+		activities = new ActivityListInActivityThreadPanel(activity);
 		
 		this.setTitle("Attività");
 
@@ -167,8 +165,6 @@ public class ActivityThreadWindow extends JFrame {
 					.db_persist();
 				this.setVisible(false);
 				this.dispose();
-				MainWindow.getInstance().setDate(MainWindow.getInstance().getSelectedDate());
-				onChangeListeners.forEach(r -> r.run());
 				
 				if (isFirstSave) {
 					Activity act = new Activity();
@@ -185,10 +181,6 @@ public class ActivityThreadWindow extends JFrame {
 		
 		this.setVisible(true);
 		
-	}
-
-	public void addOnChangeListener(Runnable onChange) {
-		onChangeListeners.add(onChange);
 	}
 
 }

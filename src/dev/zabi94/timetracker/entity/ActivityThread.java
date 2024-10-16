@@ -37,7 +37,7 @@ public class ActivityThread extends DBAutoSerializable {
 	}
 
 	@Override
-	public void db_delete() throws SQLException {
+	public void db_drop() throws SQLException {
 		super.db_delete();
 		String sql = "DELETE FROM activity WHERE activity_ID = ?";
 		Data.executeUpdate(sql, ID);
