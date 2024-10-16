@@ -27,9 +27,9 @@ import dev.zabi94.timetracker.entity.ActivityThread;
 import dev.zabi94.timetracker.gui.ErrorHandler;
 import dev.zabi94.timetracker.gui.Icons;
 import dev.zabi94.timetracker.gui.ReloadHandler;
-import dev.zabi94.timetracker.gui.components.ActionBar;
-import dev.zabi94.timetracker.gui.components.ActivityThreadCard;
 import dev.zabi94.timetracker.gui.components.SelectableListElementController.SelectableListController;
+import dev.zabi94.timetracker.gui.components.mainWindow.ActionBar;
+import dev.zabi94.timetracker.gui.components.mainWindow.ActivityThreadCard;
 import dev.zabi94.timetracker.utils.Utils;
 
 public class MainWindow extends JFrame {

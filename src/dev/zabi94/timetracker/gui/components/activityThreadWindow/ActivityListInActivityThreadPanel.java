@@ -1,4 +1,4 @@
-package dev.zabi94.timetracker.gui.components;
+package dev.zabi94.timetracker.gui.components.activityThreadWindow;
 
 import java.awt.Component;
 import java.sql.SQLException;

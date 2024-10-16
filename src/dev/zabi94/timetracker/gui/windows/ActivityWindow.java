@@ -21,8 +21,8 @@ import dev.zabi94.timetracker.entity.Activity;
 import dev.zabi94.timetracker.gui.ErrorHandler;
 import dev.zabi94.timetracker.gui.GenericHandlers;
 import dev.zabi94.timetracker.gui.Icons;
-import dev.zabi94.timetracker.gui.components.ActivityListInActivityThreadPanel.ActivityListElement;
 import dev.zabi94.timetracker.gui.components.GridUtils;
+import dev.zabi94.timetracker.gui.components.activityThreadWindow.ActivityListInActivityThreadPanel.ActivityListElement;
 import dev.zabi94.timetracker.utils.Utils;
 
 public class ActivityWindow extends JFrame {
