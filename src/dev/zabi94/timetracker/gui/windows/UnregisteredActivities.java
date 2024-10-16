@@ -74,9 +74,7 @@ public class UnregisteredActivities extends JPanel {
 				throw new RuntimeException(e);
 			}
 		});
-		Dimension osize = parentWindow.getSize();
-		parentWindow.setSize(0,0);
-		parentWindow.setSize(osize);
+		Utils.refreshComponent(parentWindow);
 	}
 	
 	public class UregisteredActivityRow extends JPanel {
@@ -125,7 +123,10 @@ public class UnregisteredActivities extends JPanel {
 				new ActivityThreadWindow(thread);
 			});
 			
-			this.setMaximumSize(new Dimension(Integer.MAX_VALUE, (int) this.getPreferredSize().getHeight() + 10));
+			int rowHeight = (int) this.getPreferredSize().getHeight() + 10;
+			this.setMaximumSize(new Dimension(Integer.MAX_VALUE, rowHeight));
+			this.setMinimumSize(new Dimension(0, rowHeight));
+			this.setPreferredSize(new Dimension((int) this.getPreferredSize().getWidth(), rowHeight));
 			
 			JPopupMenu change_state_menu = new JPopupMenu();
 			
