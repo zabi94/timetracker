@@ -1,11 +1,13 @@
 package dev.zabi94.timetracker.gui.components.unregisteredActivities;
 
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.sql.SQLException;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -21,12 +23,10 @@ import dev.zabi94.timetracker.utils.Utils;
 public class UregisteredActivityRow extends JPanel {
 
 	private static final long serialVersionUID = -2604515117042567536L;
-	private static final Dimension MARKER_DIM = new Dimension(12, 12);
-	private static final Dimension DESCRIPTION_MAX_DIM = new Dimension(220, Integer.MAX_VALUE);
-	private static final Dimension CUSTOMER_MAX_DIM = new Dimension(60, Integer.MAX_VALUE);
+	private static final Dimension MARKER_DIM = new Dimension(16, 16);
 	
 	public UregisteredActivityRow(ActivityThread thread, SelectableListController<UregisteredActivityRow> slc) throws SQLException {
-		this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
+		this.setLayout(new GridBagLayout());
 		
 		JLabel description = new JLabel(thread.getDescription());
 		JLabel time = new JLabel(Utils.quartersToTime(thread.getQuarters()));
@@ -39,23 +39,7 @@ public class UregisteredActivityRow extends JPanel {
 		marker.setSize(MARKER_DIM);
 		marker.setBackground(thread.getStatus().getColor());
 		marker.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, getForeground()));
-		
-		description.setMaximumSize(DESCRIPTION_MAX_DIM);
-		description.setPreferredSize(new Dimension(DESCRIPTION_MAX_DIM.width, description.getSize().height));
-		
-		customer.setMaximumSize(CUSTOMER_MAX_DIM);
-		customer.setPreferredSize(new Dimension(CUSTOMER_MAX_DIM.width, customer.getSize().height));
-		
-		this.add(marker);
-		this.add(Box.createHorizontalStrut(10));
-		this.add(date);
-		this.add(Box.createHorizontalStrut(10));
-		this.add(customer);
-		this.add(Box.createHorizontalStrut(10));
-		this.add(description);
-		this.add(Box.createHorizontalGlue());
-		this.add(time);
-		
+
 		this.setBorder(BorderFactory.createCompoundBorder(
 				BorderFactory.createMatteBorder(0, 0, 1, 0, getBackground().darker()),
 				BorderFactory.createEmptyBorder(5, 5, 5, 5)
@@ -63,6 +47,46 @@ public class UregisteredActivityRow extends JPanel {
 		slc.enroll(this, () -> {}, () -> {
 			new ActivityThreadWindow(thread);
 		});
+
+		date.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
+		description.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
+		customer.setFont(customer.getFont().deriveFont(Font.BOLD));
+		
+		GridBagConstraints c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.CENTER;
+		c.gridx = 0;
+		c.gridheight = 2;
+		c.insets = new Insets(5, 5, 5, 5);
+		this.add(marker, c);
+		
+		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.CENTER;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridx = 1;
+		c.ipadx = 10;
+		this.add(date, c);
+		
+		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.CENTER;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridx = 2;
+		c.weightx = 1;
+		this.add(customer, c);
+		
+		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.LINE_END;
+		c.gridx = 3;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		this.add(time, c);
+		
+		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.LINE_START;
+		c.gridx = 1;
+		c.gridy = 1;
+		c.gridwidth = 3;
+		c.weightx = 1;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		this.add(description, c);
 		
 		int rowHeight = (int) this.getPreferredSize().getHeight() + 10;
 		this.setMaximumSize(new Dimension(Integer.MAX_VALUE, rowHeight));
