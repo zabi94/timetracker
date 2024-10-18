@@ -1,5 +1,6 @@
 package dev.zabi94.timetracker;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 import javax.swing.UIManager;
@@ -10,7 +11,7 @@ import dev.zabi94.timetracker.gui.windows.MainWindow;
 
 public class TimeTracker {
 
-	public static void main(String[] args) throws SQLException {
+	public static void main(String[] args) throws SQLException, IOException {
 		
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -25,9 +26,10 @@ public class TimeTracker {
 			e.printStackTrace();
 		}
 		
-		Data.initDb();
+		Data.prepareEnvironment();
 		
 		MainWindow.getInstance();
+		
 	}
 
 }
